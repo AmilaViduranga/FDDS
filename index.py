@@ -90,8 +90,8 @@ class App(QWidget):
                                                   "All Files (*);;Python Files (*.py)", options=options)
         if fileName:
             pixmap = QPixmap(fileName)
-            # givenImage = cv2.imread(fileName,0)
-            # cv2.imwrite("Image/source.jpg", givenImage)
+            givenImage = cv2.imread(fileName,0)
+            cv2.imwrite("Image/source.jpg", givenImage)
             self.imageDisplayer.setPixmap(pixmap)
             self.show()
 
