@@ -1,7 +1,12 @@
-import sys
+import sys, os
 from PyQt5.QtWidgets import QApplication, QWidget,QFileDialog, QPushButton, QLabel, QPlainTextEdit
 from PyQt5.QtGui import QPixmap
 import cv2
+import time
+#
+#  -- import src packages --
+#
+from src.VideoController import VideoController
 
 ESC = 27
 class App(QWidget):
@@ -65,6 +70,7 @@ class App(QWidget):
         self.videoButton = QPushButton('Video', self)
         self.videoButton.setGeometry(0, 0, 120, 60)
         self.videoButton.move(325, 330)
+        self.videoButton.clicked.connect(self.loadVideoFunction)
 
         #
         # load content prepared and render ui
@@ -94,6 +100,15 @@ class App(QWidget):
             cv2.imwrite("Image/source.jpg", givenImage)
             self.imageDisplayer.setPixmap(pixmap)
             self.show()
+    #
+    #  load video function using cmd method
+    #
+    def loadVideoFunction(self):
+        try:
+            self.videoLoacator = VideoController()
+            self.videoLoacator.show()
+        except Exception as e:
+            print(str(e))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
