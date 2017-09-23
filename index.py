@@ -7,6 +7,7 @@ import time
 #  -- import src packages --
 #
 from src.VideoController import VideoController
+from src.EmblemController import EmblemController
 
 ESC = 27
 class App(QWidget):
@@ -64,6 +65,7 @@ class App(QWidget):
         self.patternButton = QPushButton('Pattern', self)
         self.patternButton.setGeometry(0,0,120,60)
         self.patternButton.move(325, 250)
+        self.patternButton.clicked.connect(self.patternComparisionFunction)
             #
             #  -- video functionality --
             #
@@ -109,6 +111,13 @@ class App(QWidget):
             self.videoLoacator.show()
         except Exception as e:
             print(str(e))
+
+    #
+    # pattern function load here
+    #
+    def patternComparisionFunction(self):
+        self.EmblemController = EmblemController()
+        self.EmblemController.mainCall()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
