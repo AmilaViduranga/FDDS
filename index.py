@@ -7,6 +7,7 @@ import time
 #  -- import src packages --
 #
 from src.VideoController import VideoController
+from src.CharacterController import CharacterController
 
 ESC = 27
 class App(QWidget):
@@ -58,6 +59,7 @@ class App(QWidget):
         self.characterButton = QPushButton('Character', self)
         self.characterButton.setGeometry(0,0,120,60)
         self.characterButton.move(325, 170)
+        self.characterButton.clicked.connect(self.loadCharacterFunction)
             #
             #  -- pattern functionality --
             #
@@ -109,6 +111,21 @@ class App(QWidget):
             self.videoLoacator.show()
         except Exception as e:
             print(str(e))
+    #
+    # load character analysis and call character recognition method
+    #
+    def loadCharacterFunction(self):
+        try:
+            self.instance = CharacterController()
+            self.result = CharacterController.main(self.instance)
+            if(self.result[0] == 1):
+                print("this is original driving license")
+                self.resultDisplayer.setPlainText("After character recognition this driving license consider as original card")
+            if(self.result[0] == 2):
+                print("this is fake driving license")
+                self.resultDisplayer.setPlainText("After character recognition this driving license consider as fake card")
+        except Exception as a:
+            print(a)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
