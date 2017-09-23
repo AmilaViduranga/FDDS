@@ -1,5 +1,5 @@
-import sys,os, os.path
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QProgressBar
+import os, os.path
+from PyQt5.QtWidgets import QWidget, QPushButton, QProgressBar, QPlainTextEdit
 from PyQt5.QtCore import QBasicTimer
 import numpy as np
 import cv2
@@ -12,27 +12,23 @@ class VideoController(QWidget):
         self.title = "Hologram Comparision"
         self.left = 10
         self.top = 10
-        self.height = 200
-        self.width = 300
+        self.height = 350
+        self.width = 320
         self.progressBar = QProgressBar(self)
         self.timer = QBasicTimer()
         self.step = 0
-        self.testResultOneLabel = QLabel(self)
-        self.testResultTwoLabel = QLabel(self)
-        self.finalResult = QLabel(self)
+        self.finalResult = QPlainTextEdit(self)
+        self.finalResult.setGeometry(0,0,300,200)
+        self.finalResult.setReadOnly(True)
         self.progressBar.setGeometry(30,40,300,25)
         self.buttonOriginal = QPushButton('Original', self)
         self.buttonGiven = QPushButton('Given', self)
         self.buttonComparision = QPushButton('Comparision', self)
-        self.buttonOriginal.move(0,0)
-        self.buttonGiven.move(100,0)
-        self.buttonComparision.move(200, 0)
-        self.testResultOneLabel.move(0,100)
-        self.testResultTwoLabel.move(0, 150)
-        self.finalResult.move(0,200)
-        self.progressBar.move(0, 50)
-        self.testResultOneLabel.setText("Result for sift application :- ")
-        self.testResultTwoLabel.setText("Result for orb application :- ")
+        self.buttonOriginal.move(5,0)
+        self.buttonGiven.move(105,0)
+        self.buttonComparision.move(205, 0)
+        self.finalResult.move(5,100)
+        self.progressBar.move(5, 50)
         self.buttonOriginal.clicked.connect(self.getOriginalInfo)
         self.buttonGiven.clicked.connect(self.getGivenCardInfo)
         self.buttonComparision.clicked.connect(self.comparision)
@@ -114,25 +110,28 @@ class VideoController(QWidget):
             for x in range (0, countIngiven):
                 totalComparisions = totalComparisions + self.siftApplication(countOriginal, dirGiven + '/'+str(x+1)+'.png', (x+1))
             averageComparision = totalComparisions / countIngiven
-            self.testResultOneLabel.setText("Result for sift application :- " + str(averageComparision))
             print("Average comparision amount for sift is "+str(averageComparision))
+            strSift = "Average comparision amount for sift is "+str(averageComparision) + "\n"
+            self.finalResult.setPlainText(strSift)
             #
             # orb comparison application
             #
             totalComparisions = 0
             for x in range (0, countIngiven):
                 totalComparisions = totalComparisions + self.orbApplication(countOriginal, dirGiven + '/'+str(x+1)+'.png', (x+1))
-            self.testResultTwoLabel.setText("Result for orb application :- " + str(totalComparisions))
+            totalComparisions = totalComparisions / countIngiven
             print("Average compariasion for orb is "+ str(totalComparisions))
+            strOrb = "Average compariasion for orb is "+ str(totalComparisions) + "\n"
+            self.finalResult.setPlainText(strSift + strOrb)
             #
             # final comparison application
             #
             if averageComparision > 1 and totalComparisions > 1:
-                self.finalResult.setText("Given card hologram is legal container")
                 print("Given card hologram is legal container")
+                self.finalResult.setPlainText(strSift + strOrb + " \n According to above test result the given card is a legal card respect to hologram")
             else:
-                self.finalResult.setText("Given card hologram is not a legal container or inputs are not quality enough")
                 print("Given card hologram is not a legal container or inputs are not quality enough")
+                self.finalResult.setPlainText(strSift + strOrb + "\n According to above test result the given card is a illegal card or not quality enough respect to hologram")
 
     def siftApplication(self, originalCount, givenImagePath, givenImageId):
         img2 = cv2.imread(givenImagePath, 0)
@@ -181,4 +180,4 @@ class VideoController(QWidget):
             self.step = self.step + 1
             self.progressBar.setValue(self.step)
             print('original image ' + str(x + 1) + '.png VS given image ' + str(givenImageId) + ' = ' + str(comparision_count))
-        return match_count/originalCount
+        return match_count
