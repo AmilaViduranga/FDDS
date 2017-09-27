@@ -6,13 +6,17 @@ import time
 #
 #  -- import src packages --
 #
+from PyQt5.uic.properties import QtCore
+
 from src.VideoController import VideoController
 from src.CharacterController import CharacterController
 from src.EmblemController import EmblemController
+from src.imageQualityProcess import QualityController
 ESC = 27
 class App(QWidget):
     def __init__(self):
         super().__init__()
+        self.strResult = "--- Results --- \n"
         #
         # main panel orientation
         #
@@ -53,6 +57,7 @@ class App(QWidget):
         self.qualityButton = QPushButton('Quality', self)
         self.qualityButton.setGeometry(0, 0, 120, 60)
         self.qualityButton.move(325,90)
+        self.qualityButton.clicked.connect(self.qualityProcess)
             #
             # -- character functionality --
             #
@@ -74,7 +79,6 @@ class App(QWidget):
         self.videoButton.setGeometry(0, 0, 120, 60)
         self.videoButton.move(325, 330)
         self.videoButton.clicked.connect(self.loadVideoFunction)
-
         #
         # load content prepared and render ui
         #
@@ -118,12 +122,15 @@ class App(QWidget):
         try:
             self.instance = CharacterController()
             self.result = CharacterController.main(self.instance)
+            self.strResult = self.strResult + "\n \n --- Character Processing Result --- \n "
             if(self.result[0] == 1):
                 print("this is original driving license")
-                self.resultDisplayer.setPlainText("After character recognition this driving license consider as original card")
+                self.strResult = self.strResult + "After character recognition this driving license consider as original card \n"
+                self.resultDisplayer.setPlainText(self.strResult)
             if(self.result[0] == 2):
                 print("this is fake driving license")
-                self.resultDisplayer.setPlainText("After character recognition this driving license consider as fake card")
+                self.strResult = self.strResult + "After character recognition this driving license consider as fake card \n"
+                self.resultDisplayer.setPlainText(self.strResult)
         except Exception as a:
             print(a)
 
@@ -133,6 +140,17 @@ class App(QWidget):
     def patternComparisionFunction(self):
         self.EmblemController = EmblemController()
         self.EmblemController.mainCall()
+    #
+    # quality process
+    #
+    def qualityProcess(self):
+        # self.qualityController = QualityController()
+        # self.qualityController.qualityAssessment()
+        self.qualityResult = QualityController.qualityAssessment()
+        self.strResult = self.strResult + "\n \n --- Quality Processing Result --- \n "
+        self.strResult = self.strResult + str(self.qualityResult)
+        print(self.strResult)
+        self.resultDisplayer.setPlainText(self.strResult)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
