@@ -38,7 +38,7 @@ class CharacterController():
     def process(self, innum):
         # re2 = cv2.imread(in1)
         # in1 = cv2.imread("C:/Users/sami/Desktop/research integreation/FDDS/Support/CharacterProcess/imgs/nu-Scand600 edit.jpg", 1)
-        in1 = cv2.imread("C:/Users/sami/Desktop/research integration 3/Support/CharacterProcess/imgs/dup-scan600.jpg", 1)
+        in1 = cv2.imread("./Support/CharacterProcess/imgs/dup-scan600.jpg", 1)
         imgcpy1 = in1.copy()
         imgcpy2 = in1.copy()
         imgcpy3 = in1.copy()
