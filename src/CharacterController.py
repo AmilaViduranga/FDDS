@@ -6,6 +6,7 @@ from PIL import Image,ImageFilter,ImageEnhance
 import os
 from sklearn import neighbors,cross_validation
 import pandas as pd
+import glob
 
 area1 =400
 area2=90
@@ -37,21 +38,18 @@ class CharacterController():
     def process(self, innum):
         # re2 = cv2.imread(in1)
         # in1 = cv2.imread("C:/Users/sami/Desktop/research integreation/FDDS/Support/CharacterProcess/imgs/nu-Scand600 edit.jpg", 1)
-        in1 = cv2.imread("C:/Users/sami/Desktop/research integreation/FDDS/Support/CharacterProcess/imgs/dup-f.jpg", 1)
+        in1 = cv2.imread("C:/Users/sami/Desktop/research integration 3/Support/CharacterProcess/imgs/dup-scan600.jpg", 1)
         imgcpy1 = in1.copy()
         imgcpy2 = in1.copy()
         imgcpy3 = in1.copy()
 
         blured = cv2.medianBlur(in1,3)
         gray = cv2.cvtColor(blured,cv2.COLOR_BGR2GRAY)
-        # cv2.imwrite("./papper/gray.jpg",gray)
+
         ret,imgThresh = cv2.threshold(gray,85,255,cv2.THRESH_BINARY)
-    # ret,imgThresh = cv2.threshold(gray,95,255,cv2.THRESH_OTSU)
 
-        # cv2.imwrite("./papper/thresh.jpg",imgThresh)
-
-        # cv2.imshow("thresh",imgThresh)
-        cv2.imwrite("../Support/CharacterProcess/results/thresh.jpg",imgThresh)
+        cv2.imwrite("./Support/CharacterProcess/results/thresh.jpg",imgThresh)
+        cv2.imshow("thresh", imgThresh)
         cv2.waitKey(1)
 
         imgContours,contours,npaHierarchy = cv2.findContours(imgThresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -59,11 +57,11 @@ class CharacterController():
         contours.sort(key=lambda x:self.get_contour_precedence(x, imgThresh.shape[1]))
 
         cv2.drawContours(imgcpy1,contours,-1,(0,0,255), 0)
-        cv2.imwrite("cont.jpg",imgcpy1)
-        # cv2.imshow("contour" , imgcpy1)
+        cv2.imwrite("./Support/CharacterProcess/results/cont.jpg",imgcpy1)
+        cv2.imshow("contour" , imgcpy1)
         cv2.waitKey(1)
 
-        path ='C:/Users/sami/Desktop/research integration/FDDS/Support/result/'+str(innum)+'/'
+        path ='C:/Users/sami/Desktop/research integration 3/Support/CharacterProcess/results/characters/'
 
         num=0
         num1=0
@@ -74,7 +72,7 @@ class CharacterController():
                 if cv2.contourArea(cnt) >area1:
                     x, y, w, h = cv2.boundingRect(cnt)
                     roi = imgcpy2[y:y + h, x:x + w]
-                    cv2.imwrite(path+str(num1) + '.jpg', roi)
+                    # cv2.imwrite(path+str(num1) + '.jpg', roi)
                     #print in terminal
                     # print(num1, cv2.contourArea(cnt))
                     # print(num1,"height = ",h ,"width =", w)
@@ -98,6 +96,7 @@ class CharacterController():
                 numone=data[num2]
                 x, y, w, h = cv2.boundingRect(numone)
                 roi = imgcpy1[y:y + h, x:x + w]
+                roi_a = imgcpy2[y:y + h, x:x + w]
                 if (num2 == 1):
                     yofs = y
                     xofs = x
@@ -107,6 +106,7 @@ class CharacterController():
                 # print("difference  " ,num2+1, "and ", num2, " = " ,x1,w1, x,w, (x1)-(x+w) )
                 # print("difference  = " ,num2+1, "and ", num2, " = ", (x1)-(x+w)," ", (x1)/(x+w) )
                 if (num2<9):
+                    cv2.imwrite(path + str(num2) + '.jpg', roi_a)
                     dt.append(w)
                     dt.append((x1)-(x+w))
 
@@ -121,7 +121,7 @@ class CharacterController():
         ret, imgThresh = cv2.threshold(gray, 85, 255, cv2.THRESH_BINARY)
         # cv2.imshow("ro1", imgThresh)
         cv2.waitKey(1)
-        cv2.imwrite("bottom.jpg", imgThresh)
+        # cv2.imwrite("bottom.jpg", imgThresh)
 
         imgContours, contours, npaHierarchy = cv2.findContours(imgThresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -172,6 +172,31 @@ class CharacterController():
                 num2 += 1
         except:
             IndexError
+        # Histogram Calculation
+        img_h = cv2.imread("./Support/CharacterProcess/results/characters/1.jpg", 1)
+        gray = cv2.cvtColor(img_h, cv2.COLOR_BGR2GRAY)
+        hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
+        plt.figure()
+        plt.title("Grayscale Histogram")
+        plt.xlabel("Bins")
+        plt.ylabel("# of Pixels")
+        plt.plot(hist)
+        plt.xlim([0, 256])
+        plt.show()
+        ar =[]
+        for img in glob.glob("Support/CharacterProcess/imgs/hist/*.jpg"):
+            file_path = img
+            file_name = os.path.basename(file_path)
+            imga = cv2.imread(str(img), 1)
+            gray2 = cv2.cvtColor(imga, cv2.COLOR_BGR2GRAY)
+            hist2 = cv2.calcHist([gray2], [0], None, [256], [0, 256])
+            a = cv2.compareHist(hist, hist2, cv2.HISTCMP_CORREL)
+            print(os.path.splitext(file_name)[0], " ", a)
+            round(a, 4)
+            ar.append(a)
+        print(sum(ar))
+        print( "length is ",len(ar),sum(ar) / len(ar))
+
 
         return dt
 
@@ -179,7 +204,7 @@ class CharacterController():
         dt1= self.process(1)
         print(1 ,dt1)
 
-        df=pd.read_csv('C:/Users/sami/Desktop/research integreation/FDDS/Support/CharacterProcess/machine\one.txt')
+        df=pd.read_csv('./Support/CharacterProcess/machine\one2.txt')
         df.replace('?',-99999,inplace=True)
         df.drop(['id'],1,inplace=True)
 
