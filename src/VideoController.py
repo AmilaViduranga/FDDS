@@ -40,14 +40,16 @@ class VideoController(QWidget):
         self.show()
 
     def getOriginalInfo(self):
-        self.captureImage('Support/VideoProcess/Original/')
+        self.captureImage('Support/VideoProcess/Original/', 'original')
 
     def getGivenCardInfo(self):
-        self.captureImage('Support/VideoProcess/Given/')
+        self.captureImage('Support/VideoProcess/Given/', 'given')
 
-    def captureImage(self, path):
+    def captureImage(self, path, state):
         camera = cv2.VideoCapture(2)
         idx = 0
+        if state == 'original':
+            idx = len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
         while True:
             ret, imgCamColor = camera.read()
             imgCamColor, idx = self.cardUsingCanny(imgCamColor, idx, path)
@@ -129,9 +131,11 @@ class VideoController(QWidget):
             if averageComparision > 1 and totalComparisions > 1:
                 print("Given card hologram is legal container")
                 self.finalResult.setPlainText(strSift + strOrb + " \n According to above test result the given card is a legal card respect to hologram")
+                return strSift + strOrb + " \n Given card is legal according to hologram"
             else:
                 print("Given card hologram is not a legal container or inputs are not quality enough")
                 self.finalResult.setPlainText(strSift + strOrb + "\n According to above test result the given card is a illegal card or not quality enough respect to hologram")
+                return strSift + strOrb + "\n Given card is not legal according to hologram"
 
     def siftApplication(self, originalCount, givenImagePath, givenImageId):
         img2 = cv2.imread(givenImagePath, 0)

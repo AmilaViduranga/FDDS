@@ -80,9 +80,6 @@ class App(QWidget):
         #
         self.setFixedSize(self.width, self.height)
         self.initUI()
-
-
-
     #
     # load the predefined contents at main method
     #
