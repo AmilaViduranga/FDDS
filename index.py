@@ -6,14 +6,19 @@ import time
 #
 #  -- import src packages --
 #
+from PyQt5.uic.properties import QtCore
+
 from src.VideoController import VideoController
+from src.CharacterController import CharacterController
 from src.EmblemController import EmblemController
 from src.LionPatternController import LionPatternController
+from src.imageQualityProcess import QualityController
 
 ESC = 27
 class App(QWidget):
     def __init__(self):
         super().__init__()
+        self.strResult = "--- Results --- \n"
         #
         # main panel orientation
         #
@@ -54,12 +59,14 @@ class App(QWidget):
         self.qualityButton = QPushButton('Quality', self)
         self.qualityButton.setGeometry(0, 0, 120, 60)
         self.qualityButton.move(325,90)
+        self.qualityButton.clicked.connect(self.qualityProcess)
             #
             # -- character functionality --
             #
         self.characterButton = QPushButton('Character', self)
         self.characterButton.setGeometry(0,0,120,60)
         self.characterButton.move(325, 170)
+        self.characterButton.clicked.connect(self.loadCharacterFunction)
             #
             #  -- feature functionality --
             #
@@ -81,12 +88,12 @@ class App(QWidget):
         self.patternButton.setGeometry(0, 0, 120, 60)
         self.patternButton.move(325, 330)
         self.patternButton.clicked.connect(self.patternComparisionFunction)
+
         #
         # load content prepared and render ui
         #
         self.setFixedSize(self.width, self.height)
         self.initUI()
-
     #
     # load the predefined contents at main method
     #
@@ -118,20 +125,52 @@ class App(QWidget):
             self.videoLoacator.show()
         except Exception as e:
             print(str(e))
+    #
+    # load character analysis and call character recognition method
+    #
+    def loadCharacterFunction(self):
+        try:
+            self.instance = CharacterController()
+            self.result = CharacterController.main(self.instance)
+            self.strResult = self.strResult + "\n \n --- Character Processing Result --- \n "
+            if(self.result[0] == 1):
+                print("this is original driving license")
+                self.strResult = self.strResult + "After character recognition this driving license consider as original card \n"
+                self.resultDisplayer.setPlainText(self.strResult)
+            if(self.result[0] == 2):
+                print("this is fake driving license")
+                self.strResult = self.strResult + "After character recognition this driving license consider as fake card \n"
+                self.resultDisplayer.setPlainText(self.strResult)
+        except Exception as a:
+            print(a)
 
     #
-    # pattern function load here
+    # feature function load here
     #
     def featureComparisionFunction(self):
         self.EmblemController = EmblemController()
         self.EmblemController.mainCall()
     #
-    #
+    # pattern function load here
     #
     def patternComparisionFunction(self):
         self.PatternController = LionPatternController()
         patternResult = self.PatternController.MainCall()
-        self.resultDisplayer.setPlainText(str(patternResult))
+        self.strResult = self.strResult = "\n \n --- Pattern Recognition --- \n"
+        self.strResult = self.strResult + self.strResult(str(patternResult))
+        self.resultDisplayer.setPlainText(str(strResult))
+    #     
+    # quality process
+    #
+    def qualityProcess(self):
+        # self.qualityController = QualityController()
+        # self.qualityController.qualityAssessment()
+        self.qualityResult = QualityController.qualityAssessment()
+        self.strResult = self.strResult + "\n \n --- Quality Processing Result --- \n "
+        self.strResult = self.strResult + str(self.qualityResult)
+        print(self.strResult)
+        self.resultDisplayer.setPlainText(self.strResult)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
