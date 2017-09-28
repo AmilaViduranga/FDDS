@@ -8,6 +8,7 @@ import time
 #
 from src.VideoController import VideoController
 from src.EmblemController import EmblemController
+from src.LionPatternController import LionPatternController
 
 ESC = 27
 class App(QWidget):
@@ -60,20 +61,26 @@ class App(QWidget):
         self.characterButton.setGeometry(0,0,120,60)
         self.characterButton.move(325, 170)
             #
-            #  -- pattern functionality --
+            #  -- feature functionality --
             #
-        self.patternButton = QPushButton('Pattern', self)
-        self.patternButton.setGeometry(0,0,120,60)
-        self.patternButton.move(325, 250)
-        self.patternButton.clicked.connect(self.patternComparisionFunction)
+        self.featureButton = QPushButton('Features', self)
+        self.featureButton.setGeometry(0,0,120,60)
+        self.featureButton.move(325, 250)
+        self.featureButton.clicked.connect(self.featureComparisionFunction)
             #
             #  -- video functionality --
             #
         self.videoButton = QPushButton('Video', self)
         self.videoButton.setGeometry(0, 0, 120, 60)
-        self.videoButton.move(325, 330)
+        self.videoButton.move(325, 410)
         self.videoButton.clicked.connect(self.loadVideoFunction)
-
+            #
+            # --pattern functionality --
+            #
+        self.patternButton = QPushButton('Pattern', self)
+        self.patternButton.setGeometry(0, 0, 120, 60)
+        self.patternButton.move(325, 330)
+        self.patternButton.clicked.connect(self.patternComparisionFunction)
         #
         # load content prepared and render ui
         #
@@ -115,9 +122,16 @@ class App(QWidget):
     #
     # pattern function load here
     #
-    def patternComparisionFunction(self):
+    def featureComparisionFunction(self):
         self.EmblemController = EmblemController()
         self.EmblemController.mainCall()
+    #
+    #
+    #
+    def patternComparisionFunction(self):
+        self.PatternController = LionPatternController()
+        patternResult = self.PatternController.MainCall()
+        self.resultDisplayer.setPlainText(str(patternResult))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
