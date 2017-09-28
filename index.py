@@ -112,7 +112,7 @@ class App(QWidget):
                                                   "All Files (*);;Python Files (*.py)", options=options)
         if fileName:
             pixmap = QPixmap(fileName)
-            givenImage = cv2.imread(fileName,0)
+            givenImage = cv2.imread(fileName)
             cv2.imwrite("Image/source.jpg", givenImage)
             self.imageDisplayer.setPixmap(pixmap)
             self.show()
@@ -156,9 +156,9 @@ class App(QWidget):
     def patternComparisionFunction(self):
         self.PatternController = LionPatternController()
         patternResult = self.PatternController.MainCall()
-        self.strResult = self.strResult = "\n \n --- Pattern Recognition --- \n"
-        self.strResult = self.strResult + self.strResult(str(patternResult))
-        self.resultDisplayer.setPlainText(str(strResult))
+        self.strResult = self.strResult + "\n \n --- Pattern Recognition --- \n"
+        self.strResult = self.strResult + str(patternResult)
+        self.resultDisplayer.setPlainText(self.strResult)
     #     
     # quality process
     #

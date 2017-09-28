@@ -15,7 +15,7 @@ def qualityAssessment():
     os.system('"E:/4th year 2nd/matalab-api/matalab-api/bin/Debug/matalab-api.exe"')
     resultFile = open("E:\/4th year 2nd\/research\FDDS\Support\QualityProcess\/result.txt", "r")
     vals = resultFile.readlines()
-    brisqueVal = abs(vals[0])
+    brisqueVal =  abs(float(vals[0]))
     kurtosisVal = vals[1]
 
     print("eye detected : "+str(eyeDetected))
@@ -23,6 +23,6 @@ def qualityAssessment():
     print("brisque value : " + str(vals[1]))
 
     if float(brisqueVal) < 15 or float(kurtosisVal) > 2.7 and eyeDetected:
-        return True
+        return "Given identification card is quality and ok to proceed"
     else:
-        return False
+        return "Warning! Given identification card is not quality and not ok to proceed"
