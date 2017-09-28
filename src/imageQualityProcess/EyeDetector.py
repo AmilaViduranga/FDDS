@@ -47,6 +47,9 @@ def detectEye(img):
     # Drawing the bounding rectangle around the face
     cv2.rectangle(frame, (ex, ey), (ex + ewidth, ey + eheight), (128, 255, 0), 2)
 
+    #cv2.imshow('Ninja Eye Detector', frame)
+    #key = cv2.waitKey(1)
+
     detected = True
 
 
