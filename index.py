@@ -11,7 +11,9 @@ from PyQt5.uic.properties import QtCore
 from src.VideoController import VideoController
 from src.CharacterController import CharacterController
 from src.EmblemController import EmblemController
+from src.LionPatternController import LionPatternController
 from src.imageQualityProcess import QualityController
+
 ESC = 27
 class App(QWidget):
     def __init__(self):
@@ -66,19 +68,27 @@ class App(QWidget):
         self.characterButton.move(325, 170)
         self.characterButton.clicked.connect(self.loadCharacterFunction)
             #
-            #  -- pattern functionality --
+            #  -- feature functionality --
             #
-        self.patternButton = QPushButton('Pattern', self)
-        self.patternButton.setGeometry(0,0,120,60)
-        self.patternButton.move(325, 250)
-        self.patternButton.clicked.connect(self.patternComparisionFunction)
+        self.featureButton = QPushButton('Features', self)
+        self.featureButton.setGeometry(0,0,120,60)
+        self.featureButton.move(325, 250)
+        self.featureButton.clicked.connect(self.featureComparisionFunction)
             #
             #  -- video functionality --
             #
         self.videoButton = QPushButton('Video', self)
         self.videoButton.setGeometry(0, 0, 120, 60)
-        self.videoButton.move(325, 330)
+        self.videoButton.move(325, 410)
         self.videoButton.clicked.connect(self.loadVideoFunction)
+            #
+            # --pattern functionality --
+            #
+        self.patternButton = QPushButton('Pattern', self)
+        self.patternButton.setGeometry(0, 0, 120, 60)
+        self.patternButton.move(325, 330)
+        self.patternButton.clicked.connect(self.patternComparisionFunction)
+
         #
         # load content prepared and render ui
         #
@@ -135,12 +145,21 @@ class App(QWidget):
             print(a)
 
     #
-    # pattern function load here
+    # feature function load here
     #
-    def patternComparisionFunction(self):
+    def featureComparisionFunction(self):
         self.EmblemController = EmblemController()
         self.EmblemController.mainCall()
     #
+    # pattern function load here
+    #
+    def patternComparisionFunction(self):
+        self.PatternController = LionPatternController()
+        patternResult = self.PatternController.MainCall()
+        self.strResult = self.strResult = "\n \n --- Pattern Recognition --- \n"
+        self.strResult = self.strResult + self.strResult(str(patternResult))
+        self.resultDisplayer.setPlainText(str(strResult))
+    #     
     # quality process
     #
     def qualityProcess(self):
@@ -151,6 +170,7 @@ class App(QWidget):
         self.strResult = self.strResult + str(self.qualityResult)
         print(self.strResult)
         self.resultDisplayer.setPlainText(self.strResult)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
