@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QProgressBar, QPlainTextEdit
 from PyQt5.QtCore import QBasicTimer
 import numpy as np
 import cv2
+from multiprocessing import Pool
 
 ESC = 27
 
@@ -51,6 +52,7 @@ class VideoController(QWidget):
         if state == 'original':
             idx = len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
         while True:
+            # os.system('"E:\/4th_year_2nd\/research\servoContrllers\VeidioCapturing\VeidioCapturing\/bin\Debug\VeidioCapturing.exe"')
             ret, imgCamColor = camera.read()
             imgCamColor, idx = self.cardUsingCanny(imgCamColor, idx, path)
             cv2.imshow('Camara', imgCamColor)

@@ -5,7 +5,8 @@ class LionPatternController():
     def MainCall(self):
         final_result = "Given driving license is "
         # change project path according to yours
-        path = 'D:\\FDDS'
+        # path = 'D:\\FDDS'
+        path = 'E:\\4th_year_2nd\\research\\FDDS'
 
         im = cv2.imread(""+path+"\\Image\\source.jpg")
 
