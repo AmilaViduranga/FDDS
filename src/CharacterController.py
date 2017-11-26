@@ -38,7 +38,9 @@ class CharacterController():
     def process(self, innum):
         # re2 = cv2.imread(in1)
         # in1 = cv2.imread("C:/Users/sami/Desktop/research integreation/FDDS/Support/CharacterProcess/imgs/nu-Scand600 edit.jpg", 1)
-        in1 = cv2.imread("./Support/CharacterProcess/imgs/dup-scan600.jpg", 1)
+        in1 = cv2.imread("./Support/CharacterProcess/imgs/nu-Scand600 edit.jpg", 1)
+        # in1 = cv2.imread("./Support/CharacterProcess/imgs/dup-scan600.jpg", 1)
+
         imgcpy1 = in1.copy()
         imgcpy2 = in1.copy()
         imgcpy3 = in1.copy()
@@ -61,7 +63,7 @@ class CharacterController():
         cv2.imshow("contour" , imgcpy1)
         cv2.waitKey(1)
 
-        path ='C:/Users/sami/Desktop/research integration 3/Support/CharacterProcess/results/characters/'
+        path ='./Support/CharacterProcess/results/characters/'
 
         num=0
         num1=0
@@ -184,6 +186,7 @@ class CharacterController():
         plt.xlim([0, 256])
         plt.show()
         ar =[]
+        value=0
         for img in glob.glob("Support/CharacterProcess/imgs/hist/*.jpg"):
             file_path = img
             file_name = os.path.basename(file_path)
@@ -196,15 +199,40 @@ class CharacterController():
             ar.append(a)
         print(sum(ar))
         print( "length is ",len(ar),sum(ar) / len(ar))
+        histvalue = sum(ar) / len(ar)
 
 
-        return dt
+        #profile checking
+        ls =[1,2,3,4,5,6,7,8]
+        prf=[]
+        for ch in ls:
+            rd = cv2.imread("./Support/CharacterProcess/results/characters/"+str(ch)+".jpg", 1)
+            blured = cv2.medianBlur(rd, 3)
+            gray = cv2.cvtColor(blured, cv2.COLOR_BGR2GRAY)
+            ret, imgThresh = cv2.threshold(gray, 85, 255, cv2.THRESH_BINARY)
+            cv2.imwrite("./Support/CharacterProcess/results/characters/profile/" + str(ch)+".jpg", imgThresh)
+            rd2 = cv2.imread("./Support/CharacterProcess/results/characters/profile/" + str(ch)+".jpg", 0)
+
+            r, c = rd2.shape
+            bp = 0
+            ar = np.array(rd2)
+            for ca in range(0, r):
+                for da in range(0, c):
+                    if ((ar[ca][da]) < 200):
+                        bp = bp + 1
+            prf.append(bp)
+            print(prf)
+
+        dt = dt+prf
+        return dt,histvalue
+
 
     def main(self):
-        dt1= self.process(1)
+        dt1,histval= self.process(1)
         print(1 ,dt1)
-
-        df=pd.read_csv('./Support/CharacterProcess/machine\one2.txt')
+        print ("this is ",histval)
+        # df=pd.read_csv('./Support/CharacterProcess/machine\one2.txt')
+        df=pd.read_csv('./Support/CharacterProcess/machine\one2withbpfull.txt')
         df.replace('?',-99999,inplace=True)
         df.drop(['id'],1,inplace=True)
 

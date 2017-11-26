@@ -15,8 +15,8 @@ function [croppedImage] = region_Extraction(imageDestination)
     measurements = regionprops(labeledImage, 'BoundingBox');
     bb = measurements.BoundingBox;
     croppedImage = imcrop(rgbImage, bb);
-    imwrite(croppedImage,'E:\4th year 2nd\research\FDDS\Image\source.jpg');
-    imwrite(croppedImage,'D:\FDDS\Image\source.jpg');
+    imwrite(croppedImage,'E:\4th_year_2nd\research\FDDS\Image\source.jpg');
+    imwrite(croppedImage,'E:\4th_year_2nd\research\FDDS\Image\source.jpg');
 end
 
 

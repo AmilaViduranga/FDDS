@@ -8,7 +8,7 @@ from PIL import Image
 def detectEye(img):
 
   # Load the Cascade Classifier Xml file
-  face_cascade = cv2.CascadeClassifier("E:\/4th year 2nd\/research\FDDS\src\imageQualityProcess\cascade/mallick_haarcascade_frontalface_default.xml")
+  face_cascade = cv2.CascadeClassifier("E:\/4th_year_2nd\/research\FDDS\src\imageQualityProcess\cascade/mallick_haarcascade_frontalface_default.xml")
 
   # Specifying minimum and maximum size parameters
   MIN_FACE_SIZE = 100

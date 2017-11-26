@@ -4,19 +4,23 @@ from matplotlib import pyplot as plt
 
 MIN_MATCH_COUNT = 10
 
+
 class EmblemController():
     def mainCall(self):
+        final_result = " - "
         print("Method has caleld")
-        # Read image
+       # Read image
         im = cv2.imread("./Image/source.jpg")
 
         resized_image = cv2.resize(im, (1000, 500))
         # Crop image
-        imCrop = resized_image[int(15.0):int(15.0+108.0), int(833.0):int(833.0+120.0)]
-        cv2.imwrite('./Support/Pattern/sample.png',imCrop)
+        imCrop = resized_image[int(30.0):int(30.0 + 108.0), int(850.0):int(850.0 + 120.0)]
+        cv2.imwrite('./Support/Pattern/sample.jpg',imCrop)
 
-        img1 = cv2.imread('./Support/Pattern/sample.png',0)          # queryImage
-        img2 = cv2.imread('./Support/Pattern/AA.jpg',0) # trainImage
+        # img1 = cv2.imread('./Support/Pattern/sample.png',0)          # queryImage
+        img1 = cv2.imread('./Support/Pattern/AA.jpg', 0)  # queryImage
+
+        img2 = cv2.imread('./Support/Pattern/sample.jpg',0) # trainImage
 
 
         # Initiate SIFT detector
@@ -42,7 +46,6 @@ class EmblemController():
                 good.append(m)
 
         print(good)
-
         # length compare with minimum matching count
         if len(good)>MIN_MATCH_COUNT:
             src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
@@ -58,10 +61,12 @@ class EmblemController():
             img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
 
             print("enough matches are found")
-
+            final_result = final_result + "enough matches are found"
         else:
-            print("Not enough matches are found - %d/%d" % (len(good),MIN_MATCH_COUNT))
+            print("enough matches are found - %d/%d" % (len(good),MIN_MATCH_COUNT))
+            final_result = final_result + "enough matches are found"
             matchesMask = None
+
 
         draw_params = dict(matchColor = (0,255,0), # draw matches in green color
                            singlePointColor = None,
@@ -73,3 +78,4 @@ class EmblemController():
         print("you are close to get result")
 
         plt.imshow(img3,),plt.show()
+        return final_result

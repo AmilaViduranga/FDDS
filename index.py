@@ -2,17 +2,15 @@ import sys, os
 from PyQt5.QtWidgets import QApplication, QWidget,QFileDialog, QPushButton, QLabel, QPlainTextEdit
 from PyQt5.QtGui import QPixmap
 import cv2
-import time
 #
 #  -- import src packages --
 #
-from PyQt5.uic.properties import QtCore
-
 from src.VideoController import VideoController
 from src.CharacterController import CharacterController
 from src.EmblemController import EmblemController
 from src.LionPatternController import LionPatternController
 from src.imageQualityProcess import QualityController
+from src.imageQualityProcess import  ImageAacquisition
 
 ESC = 27
 class App(QWidget):
@@ -24,7 +22,7 @@ class App(QWidget):
         #
         self.left = 10
         self.top = 10
-        self.width = 500
+        self.width = 650
         self.height = 570
         self.title = "FDDS"
 
@@ -40,7 +38,7 @@ class App(QWidget):
         # result container
         #
         self.resultDisplayer = QPlainTextEdit(self)
-        self.resultDisplayer.insertPlainText("Results are display here \n\n")
+        self.resultDisplayer.insertPlainText("Results \n\n")
         self.resultDisplayer.setGeometry(0,0,300,300)
         self.resultDisplayer.move(5, 250)
         self.resultDisplayer.setReadOnly(True)
@@ -53,6 +51,13 @@ class App(QWidget):
         self.loadImageButton.setGeometry(0,0,120,60)
         self.loadImageButton.move(325,10)
         self.loadImageButton.clicked.connect(self.loadImage)
+            #
+            #   -- capture image button --
+            #
+        self.captureImageButton = QPushButton('Capture Image', self)
+        self.captureImageButton.setGeometry(0, 0, 120, 60)
+        self.captureImageButton.move(455, 10)
+        self.captureImageButton.clicked.connect(self.captureImage)
             #
             #   -- quality functionality --
             #
@@ -149,7 +154,11 @@ class App(QWidget):
     #
     def featureComparisionFunction(self):
         self.EmblemController = EmblemController()
-        self.EmblemController.mainCall()
+        featureResult = self.EmblemController.mainCall()
+        self.strResult = self.strResult + "\n \n --- Feature Recognition --- \n"
+        self.strResult = self.strResult + str(featureResult)
+        self.resultDisplayer.setPlainText(self.strResult)
+
     #
     # pattern function load here
     #
@@ -170,6 +179,12 @@ class App(QWidget):
         self.strResult = self.strResult + str(self.qualityResult)
         print(self.strResult)
         self.resultDisplayer.setPlainText(self.strResult)
+
+    #
+    # capture image
+    #
+    def captureImage(self):
+        ImageAacquisition.captureAllImages()
 
 
 if __name__ == '__main__':

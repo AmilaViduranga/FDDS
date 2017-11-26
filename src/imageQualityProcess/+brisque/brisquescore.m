@@ -3,7 +3,7 @@ function qualityscore  = brisquescore(imdist)
 import brisque.*
 
 %add libsvm dependecies to matlab path
-addpath('E:\4th year 2nd\research\FDDS\src\imageQualityProcess\libsvm\matlab')
+addpath('E:\4th_year_2nd\research\FDDS\src\imageQualityProcess\libsvm\matlab')
 
 imdist = imread(imdist);
 
